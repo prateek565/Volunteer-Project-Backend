@@ -10,7 +10,7 @@ const CompanySchema = new mongoose.Schema({
     title:
     {
         type: String,
-        required: true,
+        
     },
     email:
     {

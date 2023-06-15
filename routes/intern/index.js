@@ -20,7 +20,7 @@ method    get
 Router.get("/allinterns", async (req, res) => {
   try {
 
-    const interns = await InternModel.find({});
+    const interns = await InternModel.find();
 
     return res.status(200).json(interns);
 
@@ -59,7 +59,7 @@ method    get
 Router.get("/searchinterns", async (req, res) => {
   try {
 
-    const interns = await InternModel.find({});
+    const interns = await InternModel.find();
     return res.status(200).json({ interns });
 
   } catch (error) {

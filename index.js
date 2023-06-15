@@ -1,7 +1,8 @@
 const db = require("./database/connection/index");
-
+require('dotenv').config()
 const express = require("express");
 const cors = require("cors")
+
 const auth = require("./routes/auth")
 const user = require("./routes/user")
 const resume = require("./routes/resume")

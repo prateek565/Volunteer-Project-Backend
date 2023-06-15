@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const JWT = require('jsonwebtoken');
 const CompanyModel = require("../database/models/company");
 const Router = express.Router();
-
+const MailSender= require("./MailSender")
 
 const JWT_SECRET = 'sudhir$%%Agrawal'
 
@@ -272,6 +272,18 @@ Router.put("/forgotpass", async (req, res) => {
     return res.status(500).json({ error: error.message });
   }
 })
+
+
+
+/* 
+Route     /verify
+descrip   send otp
+params    none
+access    public
+method    post
+*/
+
+Router.post("/verify",MailSender)
 
 
 module.exports = Router;

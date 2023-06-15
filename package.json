@@ -18,7 +18,6 @@
   },
   "homepage": "https://github.com/kanishka-28/Volunteer-Project#readme",
   "dependencies": {
-    
     "bcryptjs": "^2.4.3",
     "config": "3.3.1",
     "cors": "^2.8.5",
@@ -27,6 +26,7 @@
     "express-validator": "^6.12.2",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.8",
+    "node-mailjet": "^6.0.2",
     "nodemailer": "^6.7.2"
   },
   "devDependencies": {

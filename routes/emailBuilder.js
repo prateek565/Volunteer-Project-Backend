@@ -1,5 +1,5 @@
 var SibApiV3Sdk = require('@getbrevo/brevo');
-SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = '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';
+SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = process.env.KEY;
 
 
 // var otp=otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });

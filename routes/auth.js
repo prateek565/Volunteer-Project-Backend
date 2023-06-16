@@ -6,7 +6,7 @@ const bcrypt = require('bcryptjs');
 const JWT = require('jsonwebtoken');
 const CompanyModel = require("../database/models/company");
 const Router = express.Router();
-const MailSender= require("./MailSender")
+const MailSender= require("./emailBuilder")
 
 const JWT_SECRET = 'sudhir$%%Agrawal'
 

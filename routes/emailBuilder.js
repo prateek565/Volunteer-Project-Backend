@@ -1,14 +1,31 @@
 var SibApiV3Sdk = require('@getbrevo/brevo');
+const OTP = require('../database/models/otp');
 SibApiV3Sdk.ApiClient.instance.authentications['api-key'].apiKey = process.env.KEY;
 
 
 // var otp=otpGenerator.generate(6, { upperCaseAlphabets: false, specialChars: false });
+function storeOTP(email, otp) {
+  const newOTP = new OTP({
+    email,
+    otp,
+  });
 
-var otp=Math.round(Math.random()*100000);
+  newOTP
+    .save()
+    .then(() => {
+      console.log('OTP stored successfully');
+    })
+    .catch((error) => {
+      console.error('Error storing OTP:', error);
+    });
+}
 
 const MailSender=async (req,res)=>{
+  var otp=Math.floor(100000 + Math.random() * 900000).toString();
+
 
     var useremail=req.body.email;
+    storeOTP(useremail, otp);
     new SibApiV3Sdk.TransactionalEmailsApi().sendTransacEmail(
 {
     'subject':'OTP Verification - TheVolint',
@@ -22,13 +39,12 @@ const MailSender=async (req,res)=>{
     ).then(function(data) {
         console.log(data);
         res.status(200).json({
-          data :{code:otp},
+          success: true,
           message:" email sent on otp "})
      
       }, function(error) {
-        console.error(error);
-        res.status(400).json({message:"email otp verification service not working"})
-      });
+      console.error('Error:', error);
+      res.json({ success: false, message: 'Failed to send OTP.' });  });
 
     }
 

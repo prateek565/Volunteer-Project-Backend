@@ -1,5 +1,6 @@
 const express = require('express');
 const UserModel = require('../database/models/user');
+const OTP = require('../database/models/otp');
 // const passport = require('passport');
 const { body, validationResult } = require("express-validator");
 const bcrypt = require('bcryptjs');
@@ -282,8 +283,50 @@ params    none
 access    public
 method    post
 */
+function storeOTP(email, otp) {
+  const newOTP = new OTP({
+    email,
+    otp,
+  });
 
-Router.post("/verify",MailSender)
+  newOTP
+    .save()
+    .then(() => {
+      console.log('OTP stored successfully');
+    })
+    .catch((error) => {
+      console.error('Error storing OTP:', error);
+    });
+}
 
+async function retrieveOTP(email) {
+  return await  OTP.findOne({ email })
+    .sort({ createdAt: -1 })
+    .exec()
+    .then((otpDocument) => {
+      if (otpDocument) {
+        return otpDocument.otp;
+      }
+      return null;
+    })
+    .catch((error) => {
+      console.error('Error retrieving OTP:', error);
+      return null;
+    });
+}
+Router.post("/send-otp",MailSender)
+
+Router.post("/verify-otp",async(req, res) => {
+  const {email, otp } = req.body;
+
+  // Assuming you have a function to retrieve the stored OTP for verification
+  const storedOTP = await retrieveOTP(email);
+console.log(storedOTP)
+  if (storedOTP && storedOTP === otp.toString()) {
+    res.json({ success: true, message: 'OTP verified successfully!' });
+  } else {
+    res.json({ success: false, message: 'Invalid OTP. Please try again.' });
+  }
+});
 
 module.exports = Router;

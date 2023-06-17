@@ -1,11 +1,12 @@
 const mongoose = require("mongoose");
-// require("dotenv").config();
+require("dotenv").config();
 // const mongoURL = "mongodb+srv://sudhir:sudhir@dbcluster.fr4o0.mongodb.net/database?retryWrites=true&w=majority";
 mongoose.set('strictQuery', true);
-const mongoURL = "mongodb+srv://thevolint:Varanasi123@cluster0.agvtksn.mongodb.net/?retryWrites=true&w=majority"
+var  mongoURL = process.env.MONGO_URL;
+
 
 const connectToMongo = async()=>{
-    mongoose.connect(mongoURL,  () => {
+    mongoose.connect(mongoURL,{useNewUrlParser: true}  ,() => {
         console.log('connection with mongoDb established');
     })
 }

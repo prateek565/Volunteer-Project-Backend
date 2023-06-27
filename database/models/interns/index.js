@@ -69,18 +69,26 @@ const InternSchema = new mongoose.Schema({
     {
         type: Array
     },
-    usersApplied: {
-        type: Array,
-    },
-    usersAccepted: {
-        type: Array,
-    },
-    usersRejected: {
-        type: Array,
-    },
-    userOnBoarded: {
-        type: Array,
-    },
+    usersApplied: [{
+        user: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: 'Users',
+        },
+        status: {
+          type: String,
+          enum: ['pending', 'accepted', 'rejected','onboard'],
+          default: 'pending',
+        },
+      }],
+    // usersAccepted: {
+    //     type: Array,
+    // },
+    // usersRejected: {
+    //     type: Array,
+    // },
+    // userOnBoarded: {
+    //     type: Array,
+    // },
 },
     {
         timestamps: true

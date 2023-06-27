@@ -157,19 +157,16 @@ method    post
 
 Router.put("/rejectapplicant/:internID", async (req, res) => {
   try {
-    let interns = await InternModel.findById(req.params.internID);
-    interns.usersRejected.map((user)=>{
-      if(user===req.body.credentials){
-        return res.status(401).json({error: 'You have already rejected the candidate'});
-      }
-    })
+    // let interns = await InternModel.findById(req.params.internID);
+    // interns.usersRejected.map((user)=>{
+    //   if(user===req.body.credentials){
+    //     return res.status(401).json({error: 'You have already rejected the candidate'});
+    //   }
+    // })
     interns = await InternModel.findByIdAndUpdate(
-      req.params.internID,
-      {
-        $push:{
-          usersRejected: req.body.credentials
-        }
-      }, {
+      { _id: req.params.internID, 'usersApplied._id': req.body.credentials },  
+      {$set: { 'usersApplied.$.status': 'rejected' } },
+       {
       new: true
     });
     let user = await UserModel.findById(req.body.credentials);
@@ -201,24 +198,21 @@ method    post
 
 Router.put("/acceptapplicant/:internID", async (req, res) => {
   try {
-    let interns = await InternModel.findById(req.params.internID);
-    interns.usersAccepted.map((user)=>{
-      if(user===req.body.credentials){
-        return res.status(401).json({error: 'You have already accepted the candidate'});
-      }
-    })
-    const userAccepted = interns.usersApplied?.filter((user, i) => {
-      return user === req.body.credentials
-    });
+    // let interns = await InternModel.findById(req.params.internID);
+    // interns.usersAccepted.map((user)=>{
+    //   if(user===req.body.credentials){
+    //     return res.status(401).json({error: 'You have already accepted the candidate'});
+    //   }
+    // })
+    // const userAccepted = interns.usersApplied?.filter((user, i) => {
+    //   return user === req.body.credentials
+    // });
     interns = await InternModel.findByIdAndUpdate(
-      req.params.internID,
-      {
-        $push: {
-          usersAccepted: userAccepted
-        },
-      }, {
-      new: true
-    });
+      { _id: req.params.internID, 'usersApplied._id': req.body.credentials },  
+      {$set: { 'usersApplied.$.status': 'accepted' } },
+       {new: true}
+       );
+
     let user = await UserModel.findById(req.body.credentials)
     user = await UserModel.findByIdAndUpdate(
       req.body.credentials,

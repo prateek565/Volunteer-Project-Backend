@@ -109,7 +109,7 @@ Router.post("/jobapply/:internId", async (req, res) => {
     let intern = await InternModel.findById(req.params.internId)
     let ifAlreadyExists = false;
     intern.usersApplied?.map((user) => {
-      if (user === data.User.id) {
+      if (user._id === data.User.id) {
         ifAlreadyExists = true;
       }
     })
@@ -128,10 +128,13 @@ Router.post("/jobapply/:internId", async (req, res) => {
     intern = await InternModel.findOneAndUpdate({
       _id: req.params.internId
     }, {
-      $push: { usersApplied: data.User.id }
+      $push: { usersApplied: { user: data.User.id } }
     }, {
       new: true
     });
+
+    // intern.usersApplied.push({ user: data.User.id });
+
     const user = await UserModel.findOneAndUpdate({
       _id: data.User.id
     }, {

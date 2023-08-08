@@ -91,13 +91,21 @@ method    get
 // });
 Router.get("/getapplicants/:internID", async (req, res) => {
   try {
-    const interns = await InternModel.findById(req.params.internID);
-    Promise.all(interns.usersApplied.map(async (user, i) => {
-      const res = await UserModel.findById(user);
-      return res;
-    })).then((response) => {
-      return res.status(200).json(response);
-    })
+    // const interns = await InternModel.findById(req.params.internID);
+    // Promise.all(interns.usersApplied.map(async (user, i) => {
+    //   const res = await UserModel.findById(user);
+    //   return res;
+    // })).then((response) => {
+    //   return res.status(200).json(response);
+    // })
+    const job = await InternModel.findById(req.params.internID).populate('usersApplied.user').lean();
+
+    const applicants = job.usersApplied.map(application => ({
+      user: application.user,
+      status: application.status
+    }));
+
+    res.status(200).json(applicants );
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -106,13 +114,23 @@ Router.get("/getapplicants/:internID", async (req, res) => {
 Router.get("/useraccepted/:internId", async (req, res) => {
   try {
 
-    const intern = await InternModel.findById(req.params.internId);
-    Promise.all(intern.usersAccepted.map(async (user, i) => {
-      const res = await UserModel.findById(user);
-      return res;
-    })).then((response) => {
-      return res.status(200).json(response);
-    })
+    // const intern = await InternModel.findById(req.params.internId);
+    // Promise.all(intern.usersAccepted.map(async (user, i) => {
+    //   const res = await UserModel.findById(user);
+    //   return res;
+    // })).then((response) => {
+    //   return res.status(200).json(response);
+    // })
+
+    const job = await InternModel.findById(req.params.internId)
+      .populate('usersApplied.user')
+      .lean();
+
+    const acceptedUsers = job.usersApplied
+      .filter(application => application.status === 'accepted')
+      .map(application => application.user);
+
+    res.status(200).json( acceptedUsers );
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
@@ -121,28 +139,31 @@ Router.get("/useraccepted/:internId", async (req, res) => {
 Router.get("/userrejected/:internId", async (req, res) => {
   try {
 
-    const intern = await InternModel.findById(req.params.internId);
-    Promise.all(intern.usersRejected.map(async (user, i) => {
-      const res = await UserModel.findById(user);
-      return res;
-    })).then((response) => {
-      return res.status(200).json(response);
-    })
+    const job = await InternModel.findById(req.params.internId)
+    .populate('usersApplied.user')
+    .lean();
+
+  const acceptedUsers = job.usersApplied
+    .filter(application => application.status === 'rejected')
+    .map(application => application.user);
+
+  res.status(200).json( acceptedUsers );
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }
 })
 
-Router.get("/useronboarded/:internId", async (req, res) => {
+Router.get("/usersonboarded/:internId", async (req, res) => {
   try {
+    const job = await InternModel.findById(req.params.internId)
+    .populate('usersApplied.user')
+    .lean();
 
-    const intern = await InternModel.findById(req.params.internId);
-    Promise.all(intern.userOnBoarded.map(async (user, i) => {
-      const res = await UserModel.findById(user);
-      return res;
-    })).then((response) => {
-      return res.status(200).json(response);
-    })
+  const acceptedUsers = job.usersApplied
+    .filter(application => application.status === 'onboarded')
+    .map(application => application.user);
+
+  res.status(200).json( acceptedUsers );
   } catch (error) {
     return res.status(500).json({ error: error.message });
   }

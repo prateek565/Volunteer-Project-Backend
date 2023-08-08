@@ -76,7 +76,7 @@ const InternSchema = new mongoose.Schema({
         },
         status: {
           type: String,
-          enum: ['pending', 'accepted', 'rejected','onboard'],
+          enum: ['pending', 'accepted', 'rejected','onboarded'],
           default: 'pending',
         },
       }],
